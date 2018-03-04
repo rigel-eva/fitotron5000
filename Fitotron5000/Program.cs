@@ -16,7 +16,7 @@ namespace Fitotron5000
             client.Log += Log;
             client.MessageReceived += MessageReceived;
             client.MessageReceived += Ping;
-            client.MessageReceived += CopyConstructor;
+            //client.MessageReceived += CopyConstructor;
             //Note we are expecting the enviroment variable in the user profile.
             string token = System.Environment.GetEnvironmentVariable("fitotronkey", EnvironmentVariableTarget.User); // Remember to keep this private!
             await client.LoginAsync(TokenType.Bot, token);
