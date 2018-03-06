@@ -43,20 +43,21 @@ namespace Fitotron5000
                 await message.Channel.SendMessageAsync("Ping!");
             }
         }
-        //private async Task CopyConstructor(SocketMessage message)
-        //{
-        //    if (isCommand(message,"copyconstructor"))
-        //    {
-        //        await message.Channel.SendMessageAsync(message.Content);
-        //    }
-        //}
+        private async Task CopyConstructor(SocketMessage message)
+        {
+           if (isCommand(message,"copyconstructor"))
+           {
+               await message.Channel.SendMessageAsync(message.Content);
+           }
+        }
         private Task Log(LogMessage msg)
         {
             Console.WriteLine(msg.ToString());
             return Task.CompletedTask;
         }
         private bool isCommand(SocketMessage message, string commandInvoker){
-            return (message.Content.ToLower().Substring(0, (commandPrefix + commandInvoker).Length) == commandPrefix + commandInvoker);
+            bool returner=!message.Author.IsBot; //Checking if our bot is not talking to another bot, because that would be dumb.
+            return (!message.Author.IsBot && message.Content.ToLower().Substring(0, (commandPrefix + commandInvoker).Length) == commandPrefix + commandInvoker);
         }
     }
 }
