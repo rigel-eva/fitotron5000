@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/Fitotron5000/bin/Debug/netcoreapp2.0/fitotron5000.dll",
-            "args": [],
+            "args": ["--discordKey ${env:fitotronkey}"],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
             "stopAtEntry": false,
