@@ -9,7 +9,7 @@ namespace Fitotron5000{
     public class User{
         public int discordID;
         public decimal goal;
-        public List<Weight> weights;
+        public List<Weight> weights;    
     }
     public class Weight{
         public int discordID;
@@ -17,5 +17,12 @@ namespace Fitotron5000{
         public User user;
         public decimal userWeight;
         public DateTime timeStamp;
+        public Weight(int discordID, int weightID, User user, decimal userWeight){
+            discordID=this.discordID;
+            weightID=this.weightID;
+            user=this.user;
+            this.userWeight=userWeight;
+            timeStamp=DateTime.Now;
+        }
     }
 }
