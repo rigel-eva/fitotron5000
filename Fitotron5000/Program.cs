@@ -36,7 +36,7 @@ namespace Fitotron5000
             await Task.Delay(-1);
         }
         private async Task messageHandler(SocketMessage message){
-            if(!message.Author.IsBot&&message.Content.Substring(0,commandPrefix.Length)==commandPrefix){
+            if(!message.Author.IsBot&&!message.Author.IsWebhook&&message.Content.Substring(0,commandPrefix.Length)==commandPrefix){
                 switch(message.Content.Split(" ")[0].ToLower()){
                     case commandPrefix+"hard":
                         await message.Channel.SendMessageAsync("AS NAILS!");
@@ -52,6 +52,12 @@ namespace Fitotron5000
                         break;
                     case commandPrefix+"register":
                         registerUser(message);
+                        break;
+                    case commandPrefix+"exit":
+                        if(message.Author.Id==176537265336614912){
+                            await message.Channel.SendMessageAsync($"Ok, Exiting {message.Author.Username}.");
+                            System.Environment.Exit(1);
+                        }
                         break;
                     default:
                         break;
