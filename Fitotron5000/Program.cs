@@ -87,7 +87,7 @@ namespace Fitotron5000
                    break;
                }
                //ok if we made it past this point our little kitten should be good and ready to be petted and placed into the database nyaaaa~
-               using(var db=new UserContext(@"Server=(localdb)\mssqllocaldb;Database=fitotron_dev;Trusted_Connection=True;user id=fitotron5000-dev; Pwd=boop")){
+               using(var db=new UserContext(@"Server=(localdb)\mssqllocaldb;Database=fitotron_dev;UID=fitotron5000-dev; PWD=boop")){
                    var user=new User{
                        discordID=message.Author.Id
                    };
