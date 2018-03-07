@@ -50,6 +50,9 @@ namespace Fitotron5000
                     case commandPrefix+"copyconstructor":
                         CopyConstructor(message);
                         break;
+                    case commandPrefix+"register":
+                        registerUser(message);
+                        break;
                     default:
                         break;
                 }
@@ -64,6 +67,39 @@ namespace Fitotron5000
             Console.WriteLine(msg.ToString());
             return Task.CompletedTask;
         }
-       
+       private void registerUser(SocketMessage message){
+           //Expected input:
+           //%register - Register the user with nil weight
+           //%register 250 - Register the user with weight 250
+           //%register 250 200 - Register the user with weight 250 and goal of 200
+           string[] messageContext=message.Content.Split(" ");
+           //try{
+               decimal userWeight=0;
+               decimal userGoal=0;
+               switch(messageContext.Length){
+                   case 3:
+                    userGoal=Decimal.Parse(messageContext[2]);
+                    goto case 2;
+                   case 2:
+                    userWeight=Decimal.Parse(messageContext[1]);
+                    break;
+                   default:
+                   break;
+               }
+               //ok if we made it past this point our little kitten should be good and ready to be petted and placed into the database nyaaaa~
+               using(var db=new UserContext()){
+                   var user=new User{
+                       discordID=message.Author.Id,
+                       currentWeight=userWeight,
+                       goal=userGoal
+                   };
+                   db.Users.Add(user);
+                   db.SaveChanges();
+               }
+
+        //    }catch(Exception e){
+        //        await message.Channel.SendMessageAsync($"Wrong syntax for command, was expecting decimals.\n{e.GetType().ToString()}\n{e.StackTrace}");
+        //    }
+       }
     }
 }
