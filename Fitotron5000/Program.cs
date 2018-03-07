@@ -51,7 +51,7 @@ namespace Fitotron5000
                         CopyConstructor(message);
                         break;
                     case commandPrefix+"register":
-                        registerUser(message);
+                        await registerUser(message);
                         break;
                     default:
                         break;
@@ -67,13 +67,13 @@ namespace Fitotron5000
             Console.WriteLine(msg.ToString());
             return Task.CompletedTask;
         }
-       private void registerUser(SocketMessage message){
+       private async Task registerUser(SocketMessage message){
            //Expected input:
            //%register - Register the user with nil weight
            //%register 250 - Register the user with weight 250
            //%register 250 200 - Register the user with weight 250 and goal of 200
            string[] messageContext=message.Content.Split(" ");
-           //try{
+           try{
                decimal userWeight=0;
                decimal userGoal=0;
                switch(messageContext.Length){
@@ -87,19 +87,26 @@ namespace Fitotron5000
                    break;
                }
                //ok if we made it past this point our little kitten should be good and ready to be petted and placed into the database nyaaaa~
-               using(var db=new UserContext()){
+               using(var db=new UserContext(@"Server=(localdb)\mssqllocaldb;Database=fitotron_dev;Trusted_Connection=True;user id=fitotron5000-dev; Pwd=boop")){
                    var user=new User{
-                       discordID=message.Author.Id,
-                       currentWeight=userWeight,
-                       goal=userGoal
+                       discordID=message.Author.Id
                    };
+                   if(userGoal!=0){
+                       user.currentWeight=userWeight;
+                       user.goal=userGoal;
+                   }
+                   else if(userWeight!=0){
+                       user.currentWeight=userWeight;
+                   }
                    db.Users.Add(user);
                    db.SaveChanges();
+                   await message.Channel.SendMessageAsync("Creation Successful");
                }
 
-        //    }catch(Exception e){
-        //        await message.Channel.SendMessageAsync($"Wrong syntax for command, was expecting decimals.\n{e.GetType().ToString()}\n{e.StackTrace}");
-        //    }
+           }catch(Exception e){
+               await message.Channel.SendMessageAsync($"An Error has occured in messageContext. Please check the server log for more info!\n{e.GetType().ToString()} - {e.Message}");
+               Console.WriteLine($"An Error has occured in messageContext:{e.GetType().ToString()}\n{e.StackTrace}");
+           }
        }
     }
 }
