@@ -5,9 +5,12 @@ namespace Fitotron5000{
     public class UserContext :DbContext{
         public DbSet<User> Users {get; set;}
         public DbSet<Weight> Weights {get;set;}
+         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){
+             optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=MyDatabase;Trusted_Connection=True;");
+         }
     }
     public class User{
-        public int discordID;
+        public long discordID;
         public decimal goal;
         public List<Weight> weights;    
     }
