@@ -93,11 +93,11 @@ namespace Fitotron5000
                    break;
                }
                //ok if we made it past this point our little kitten should be good and ready to be petted and placed into the database nyaaaa~
-               using(var db=new UserContext()){
-                   var user=new User{
+               using(var db=new Models.fitotron_devContext()){
+                   var user=new Models.Users{
                        discordID=message.Author.Id,
-                       currentWeight=userWeight,
-                       goal=userGoal
+                       CurrentWeight=userWeight,
+                       Goal=userGoal
                    };
                    db.Users.Add(user);
                    db.SaveChanges();

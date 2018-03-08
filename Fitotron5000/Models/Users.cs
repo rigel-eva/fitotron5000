@@ -9,5 +9,16 @@ namespace Fitotron5000.Models
         public long DiscordId { get; set; }
         public decimal? Goal { get; set; }
         public decimal? CurrentWeight { get; set; }
+        public ulong discordID
+        {
+            get
+            {
+                return unchecked((ulong)(DiscordId-long.MinValue));
+            }
+            set
+            {
+                DiscordId=unchecked((long)(value) + long.MinValue);
+            }
+        }
     }
 }
