@@ -33,6 +33,7 @@ namespace Fitotron5000.Models
                 entity.Property(e => e.Goal)
                     .HasColumnName("goal")
                     .HasColumnType("decimal(18, 0)");
+                entity.Ignore(e => e.discordID);
             });
 
             modelBuilder.Entity<Weights>(entity =>

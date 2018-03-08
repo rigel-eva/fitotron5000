@@ -13,11 +13,11 @@ namespace Fitotron5000.Models
         {
             get
             {
-                return unchecked((ulong)(DiscordId-long.MinValue));
+                return (ulong)DiscordId;
             }
             set
             {
-                DiscordId=unchecked((long)(value) + long.MinValue);
+                DiscordId=(long)value;
             }
         }
     }

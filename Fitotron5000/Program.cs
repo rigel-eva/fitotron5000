@@ -51,7 +51,7 @@ namespace Fitotron5000
                         CopyConstructor(message);
                         break;
                     case commandPrefix+"register":
-                        registerUser(message);
+                        await registerUser(message);
                         break;
                     case commandPrefix+"exit":
                         if(message.Author.Id==176537265336614912){
@@ -73,39 +73,47 @@ namespace Fitotron5000
             Console.WriteLine(msg.ToString());
             return Task.CompletedTask;
         }
-       private void registerUser(SocketMessage message){
+       private async Task registerUser(SocketMessage message){
            //Expected input:
            //%register - Register the user with nil weight
            //%register 250 - Register the user with weight 250
            //%register 250 200 - Register the user with weight 250 and goal of 200
            string[] messageContext=message.Content.Split(" ");
-           //try{
-               decimal userWeight=0;
-               decimal userGoal=0;
-               switch(messageContext.Length){
-                   case 3:
-                    userGoal=Decimal.Parse(messageContext[2]);
-                    goto case 2;
-                   case 2:
-                    userWeight=Decimal.Parse(messageContext[1]);
-                    break;
-                   default:
-                   break;
-               }
-               //ok if we made it past this point our little kitten should be good and ready to be petted and placed into the database nyaaaa~
-               using(var db=new Models.fitotron_devContext()){
-                   var user=new Models.Users{
-                       discordID=message.Author.Id,
-                       CurrentWeight=userWeight,
-                       Goal=userGoal
-                   };
-                   db.Users.Add(user);
-                   db.SaveChanges();
-               }
+            try
+            {
+                decimal userWeight = 0;
+                decimal userGoal = 0;
+                switch (messageContext.Length)
+                {
+                    case 3:
+                        userGoal = Decimal.Parse(messageContext[2]);
+                        goto case 2;
+                    case 2:
+                        userWeight = Decimal.Parse(messageContext[1]);
+                        break;
+                    default:
+                        break;
+                }
+                //ok if we made it past this point our little kitten should be good and ready to be petted and placed into the database nyaaaa~
+                using (var db = new Models.fitotron_devContext())
+                {
+                    var user = new Models.Users
+                    {
+                        discordID = message.Author.Id,
+                        CurrentWeight = userWeight,
+                        Goal = userGoal
+                    };
+                    await db.Users.AddAsync(user);
+                    await db.SaveChangesAsync();
+                }
+                await message.Channel.SendMessageAsync("Successuflly added user!");
 
-        //    }catch(Exception e){
-        //        await message.Channel.SendMessageAsync($"Wrong syntax for command, was expecting decimals.\n{e.GetType().ToString()}\n{e.StackTrace}");
-        //    }
-       }
+            }
+            catch (Exception e)
+            {
+                await message.Channel.SendMessageAsync($"Something went wrong on the server ... the admin should check the logs\nMore info:\t**{e.GetType().ToString()}**\n\t\t{e.Message}\n\t\t{e.HelpLink}");
+                Console.WriteLine($"Error Thrown in registerUser! {e.GetType().ToString()}\n\t\t{e.Message}\n\t\t{e.StackTrace}\n\t\t{e.HelpLink}");
+            }
+        }
     }
 }
