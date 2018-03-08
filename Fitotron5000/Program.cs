@@ -1,5 +1,6 @@
 ﻿using Discord;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Discord.WebSocket;
@@ -53,6 +54,9 @@ namespace Fitotron5000
                     case commandPrefix+"register":
                         await registerUser(message);
                         break;
+                    case commandPrefix + "userinfo":
+                        await getUser(message);
+                        break;
                     case commandPrefix+"exit":
                         if(message.Author.Id==176537265336614912){
                             await message.Channel.SendMessageAsync($"Ok, Exiting {message.Author.Username}.");
@@ -73,7 +77,12 @@ namespace Fitotron5000
             Console.WriteLine(msg.ToString());
             return Task.CompletedTask;
         }
-       private async Task registerUser(SocketMessage message){
+        private async Task WriteError(ISocketMessageChannel channel,Exception e)
+        {
+            await channel.SendMessageAsync($"Something went wrong on the server ... the admin should check the logs\nMore info:\t**{e.GetType().ToString()}**\n\t\t{e.Message}\n\t\t{e.HelpLink}");
+            Console.WriteLine($"Error Thrown in registerUser! {e.GetType().ToString()}\n\t\t{e.Message}\n\t\t{e.StackTrace}\n\t\t{e.HelpLink}");
+        }
+        private async Task registerUser(SocketMessage message){
            //Expected input:
            //%register - Register the user with nil weight
            //%register 250 - Register the user with weight 250
@@ -111,9 +120,33 @@ namespace Fitotron5000
             }
             catch (Exception e)
             {
-                await message.Channel.SendMessageAsync($"Something went wrong on the server ... the admin should check the logs\nMore info:\t**{e.GetType().ToString()}**\n\t\t{e.Message}\n\t\t{e.HelpLink}");
-                Console.WriteLine($"Error Thrown in registerUser! {e.GetType().ToString()}\n\t\t{e.Message}\n\t\t{e.StackTrace}\n\t\t{e.HelpLink}");
+                await WriteError(message.Channel,e);
             }
         }
+        private async Task getUser(SocketMessage message)
+        {
+            string[] messageContext = message.Content.Split(" ");
+            try
+            {
+                using(var db=new Models.fitotron_devContext())
+                {
+                    var user = db.Users.Where(e => e.discordID == message.Author.Id);
+                    if (user == null)
+                    {
+                        await message.Channel.SendMessageAsync("Could not find user!");
+                    }
+                    else
+                    {
+                        Models.Users foundUser = user.First<Models.Users>();
+                        await message.Channel.SendMessageAsync($"User Found!\n\tCurrent Weight: {foundUser.CurrentWeight} Lbs\n\tWeight Goal: {foundUser.Goal}");
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                await WriteError(message.Channel, e);
+            }
+        }
+        
     }
 }
