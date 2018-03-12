@@ -5,10 +5,10 @@ namespace Fitotron5000.Models
 {
     public partial class Users
     {
-        public int Id { get; set; }
         public long DiscordId { get; set; }
         public decimal? Goal { get; set; }
         public decimal? CurrentWeight { get; set; }
+        public int Id { get; set; }
         public ulong discordID
         {
             get
@@ -17,8 +17,9 @@ namespace Fitotron5000.Models
             }
             set
             {
-                DiscordId=(long)value;
+                DiscordId = (long)value;
             }
         }
     }
+
 }

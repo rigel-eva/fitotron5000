@@ -22,8 +22,6 @@ namespace Fitotron5000.Models
         {
             modelBuilder.Entity<Users>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.CurrentWeight)
                     .HasColumnName("currentWeight")
                     .HasColumnType("decimal(18, 0)");
