@@ -4,7 +4,7 @@ using System;
 using System.Threading.Tasks;
 namespace Fitotron5000.Commands
 {
-    class userRegistration
+    class userCommands
     {
         static public async Task getUser(SocketMessage message)
         {

@@ -62,10 +62,10 @@ namespace Fitotron5000
                         await message.Channel.SendMessageAsync($"NO THIS IS FITOTRON5000");
                         break;
                     case commandPrefix + registerCommand:
-                        await Commands.userRegistration.registerUser(message);
+                        await Commands.userCommands.registerUser(message);
                         break;
                     case commandPrefix + "userinfo":
-                        await Commands.userRegistration.getUser(message);
+                        await Commands.userCommands.getUser(message);
                         break;
                     case commandPrefix + "addweight":
                         Commands.weightCommands.addWeight(message);

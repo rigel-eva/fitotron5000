@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Discord;
+using System.Threading.Tasks;
 using Discord.WebSocket;
 using System.Linq;
 namespace Fitotron5000.Commands
 {
     class weightCommands
     {
-        public static void addWeight(SocketMessage message)
+        public static async Task addWeight(SocketMessage message)
         {
             string[] args = message.Content.Split(" ");
             //Ok, we are expecting the format of `%addweight 888` where 888 is the weight
@@ -26,20 +24,20 @@ namespace Fitotron5000.Commands
                             UserWeight = newWeight,
                             TimeStamp = DateTime.Now
                         };
-                        db.Weights.Add(weight);
+                        await db.Weights.AddAsync(weight);
                         foundUser.CurrentWeight = newWeight;
                         db.Users.Update(foundUser);
-                        db.SaveChanges();
-                        message.Channel.SendMessageAsync("Added New Weight!");
+                        await db.SaveChangesAsync();
+                        await message.Channel.SendMessageAsync("Added New Weight!");
                     }
                     else
                     {
-                        message.Channel.SendMessageAsync($"Error!: Was expecting a numeric number. instead got {args[1]}");
+                        await message.Channel.SendMessageAsync($"Error!: Was expecting a numeric number. instead got {args[1]}");
                     }
                 }
                 else
                 {
-                    message.Channel.SendMessageAsync($"Error!: You need to register first with {Program.commandPrefix+Program.registerCommand}");
+                    await message.Channel.SendMessageAsync($"Error!: You need to register first with {Program.commandPrefix+Program.registerCommand}");
                 }
             }
         }
