@@ -9,11 +9,20 @@ namespace Fitotron5000.Commands
         static public async Task getUser(SocketMessage message)
         {
             string[] messageContext = message.Content.Split(" ");
+            ulong userID;
+            if (message.MentionedUsers.Any())
+            {
+                userID = message.MentionedUsers.First().Id;
+            }
+            else
+            {
+                userID = message.Author.Id;
+            }
             try
             {
                 using (var db = new Models.fitotron_devContext())
                 {
-                    var user = db.Users.Where(e => e.discordID == message.Author.Id);
+                    var user = db.Users.Where(e => e.discordID == userID);
                     if (user.Any())
                     {
                         Models.Users foundUser = user.First();
@@ -33,7 +42,7 @@ namespace Fitotron5000.Commands
                         await message.Channel.SendMessageAsync("Could not find user!");
                     }
                 }
-            } catch(Exception e)
+            } catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
@@ -74,10 +83,47 @@ namespace Fitotron5000.Commands
                     UserWeight = userWeight,
                     TimeStamp = DateTime.Now
                 };
-                await db.Weights.AddAsync (weight);
+                await db.Weights.AddAsync(weight);
                 await db.SaveChangesAsync();
             }
             await message.Channel.SendMessageAsync("Successuflly added user!");
+        }
+        static public async Task updateGoal(SocketMessage message)
+        {
+            string[] messageContent = message.Content.Split(" ");
+            double newGoal;
+            if(double.TryParse(messageContent[1],out newGoal))
+            {
+                using(var db = new Models.fitotron_devContext())
+                {
+                    var user = db.Users.Where(e => e.discordID == message.Author.Id);
+                    if (user.Any())
+                    {
+                        Models.Users foundUser = user.First();
+                        double? oldGoal = foundUser.Goal;
+                        foundUser.Goal = newGoal;
+                        db.Users.Update(foundUser);
+                        await db.SaveChangesAsync();
+                        if (oldGoal != null)
+                        {
+
+                            await message.Channel.SendMessageAsync($"Ok Updated user goal from {oldGoal} Lbs to {newGoal} Lbs");
+                        }
+                        else
+                        {
+                            await message.Channel.SendMessageAsync($"Ok Updated user goal to {newGoal}");
+                        }
+                    }
+                    else
+                    {
+                        await message.Channel.SendMessageAsync($"Error: User not Found! Make sure to register first with `{Program.commandPrefix + Program.registerCommand}` !");
+                    }
+                }
+            }
+            else
+            {
+                await message.Channel.SendMessageAsync($"Error: Sorry but {messageContent[1]} is not a valid number.");
+            }
         }
     }
 }

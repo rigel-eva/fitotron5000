@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using System.Linq;
+using System.Web.UI.DataVisualization.Charting;
 namespace Fitotron5000.Commands
 {
     class weightCommands
@@ -39,6 +40,19 @@ namespace Fitotron5000.Commands
                 {
                     await message.Channel.SendMessageAsync($"Error!: You need to register first with {Program.commandPrefix+Program.registerCommand}");
                 }
+            }
+        }
+        public static async Task generateChart(SocketMessage message)
+        {
+            string[] messageContext = message.Content.Split(" ");
+            ulong userId;
+            if (message.MentionedUsers.Any())
+            {
+                userId = message.MentionedUsers.First().Id;
+            }
+            else
+            {
+                userId = message.Author.Id;
             }
         }
     }

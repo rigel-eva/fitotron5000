@@ -68,7 +68,10 @@ namespace Fitotron5000
                         await Commands.userCommands.getUser(message);
                         break;
                     case commandPrefix + "addweight":
-                        Commands.weightCommands.addWeight(message);
+                        await Commands.weightCommands.addWeight(message);
+                        break;
+                    case commandPrefix + "updategoal":
+                        await Commands.userCommands.updateGoal(message);
                         break;
                     case commandPrefix + "exit":
                         if (message.Author.Id == 176537265336614912)
