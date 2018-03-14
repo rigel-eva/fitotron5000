@@ -24,13 +24,13 @@ namespace Fitotron5000.Models
             {
                 entity.Property(e => e.CurrentWeight)
                     .HasColumnName("currentWeight")
-                    .HasColumnType("decimal(18, 0)");
+                    .HasColumnType("float");
 
                 entity.Property(e => e.DiscordId).HasColumnName("_discordID");
 
                 entity.Property(e => e.Goal)
                     .HasColumnName("goal")
-                    .HasColumnType("decimal(18, 0)");
+                    .HasColumnType("float");
                 entity.Ignore(e => e.discordID);
             });
 
@@ -42,14 +42,17 @@ namespace Fitotron5000.Models
                     .HasColumnName("timeStamp")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.UserId)
-                    .IsRequired()
-                    .HasColumnName("userId")
-                    .HasColumnType("nchar(10)");
+                entity.Property(e => e.UserId).HasColumnName("userId");
 
                 entity.Property(e => e.UserWeight)
                     .HasColumnName("userWeight")
-                    .HasColumnType("decimal(18, 0)");
+                    .HasColumnType("float");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Weights)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("fk_weights_users");
             });
         }
     }

@@ -6,6 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models-Old2\**" />
+    <Compile Remove="Models-OLD\**" />
+    <EmbeddedResource Remove="Models-Old2\**" />
+    <EmbeddedResource Remove="Models-OLD\**" />
+    <None Remove="Models-Old2\**" />
+    <None Remove="Models-OLD\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Discord.Net" Version="1.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.1" />
