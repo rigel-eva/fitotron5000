@@ -1,11 +1,12 @@
 ﻿using Discord.WebSocket;
 using System.Linq;
 using System;
-namespace Fitotron5000
+using System.Threading.Tasks;
+namespace Fitotron5000.Commands
 {
     class userRegistration
     {
-        static public void getUser(SocketMessage message)
+        static public async Task getUser(SocketMessage message)
         {
             string[] messageContext = message.Content.Split(" ");
             try
@@ -13,23 +14,23 @@ namespace Fitotron5000
                 using (var db = new Models.fitotron_devContext())
                 {
                     var user = db.Users.Where(e => e.discordID == message.Author.Id);
-                    if (user == null)
+                    if (user.Any())
                     {
-                        message.Channel.SendMessageAsync("Could not find user!");
-                    }
-                    else
-                    {
-                        Models.Users foundUser = user.First<Models.Users>();
+                        Models.Users foundUser = user.First();
                         string returnString = "User Found!";
                         if (foundUser.CurrentWeight != null)
                         {
-                            returnString+=$"\n\tCurrent Weight: {Math.Round((double)foundUser.CurrentWeight, 1)} Lbs";
+                            returnString += $"\n\tCurrent Weight: {Math.Round((double)foundUser.CurrentWeight, 1)} Lbs";
                         }
                         if (foundUser.Goal != null)
                         {
                             returnString += $"\n\tWeight Goal: {Math.Round((double)foundUser.Goal, 1)} Lbs";
                         }
-                        message.Channel.SendMessageAsync(returnString);
+                        await message.Channel.SendMessageAsync(returnString);
+                    }
+                    else
+                    {
+                        await message.Channel.SendMessageAsync("Could not find user!");
                     }
                 }
             } catch(Exception e)
@@ -37,7 +38,7 @@ namespace Fitotron5000
                 Console.WriteLine(e.ToString());
             }
         }
-        static public void registerUser(SocketMessage message)
+        static public async Task registerUser(SocketMessage message)
         {
             //Expected input:
             //%register - Register the user with nil weight
@@ -66,17 +67,17 @@ namespace Fitotron5000
                     CurrentWeight = userWeight,
                     Goal = userGoal
                 };
-                db.Users.Add(user);
+                await db.Users.AddAsync(user);
                 var weight = new Models.Weights
                 {
-                    UserId = user.Id,
+                    User = user,
                     UserWeight = userWeight,
                     TimeStamp = DateTime.Now
                 };
-                db.Weights.Add(weight);
-                db.SaveChanges();
+                await db.Weights.AddAsync (weight);
+                await db.SaveChangesAsync();
             }
-            message.Channel.SendMessageAsync("Successuflly added user!");
+            await message.Channel.SendMessageAsync("Successuflly added user!");
         }
     }
 }

@@ -6,10 +6,11 @@ using System.Collections.Generic;
 using Discord.WebSocket;
 namespace Fitotron5000
 {
-
+    
     internal class Program
     {
-        private const string commandPrefix = "%";
+        public const string registerCommand = "register";
+        public const string commandPrefix = "%";
         private static void Main(string[] args) => new Program().MainAsync(args).GetAwaiter().GetResult();
         public async Task MainAsync(string[] args)
         {
@@ -57,14 +58,17 @@ namespace Fitotron5000
                     case commandPrefix + "copyconstructor":
                         CopyConstructor(message);
                         break;
-                    case commandPrefix + "register":
-                        userRegistration.registerUser(message);
-                        break;
-                    case commandPrefix + "userinfo":
-                        userRegistration.getUser(message);
-                        break;
                     case commandPrefix + "isthisthekrustykrab":
                         await message.Channel.SendMessageAsync($"NO THIS IS FITOTRON5000");
+                        break;
+                    case commandPrefix + registerCommand:
+                        await Commands.userRegistration.registerUser(message);
+                        break;
+                    case commandPrefix + "userinfo":
+                        await Commands.userRegistration.getUser(message);
+                        break;
+                    case commandPrefix + "addweight":
+                        Commands.weightCommands.addWeight(message);
                         break;
                     case commandPrefix + "exit":
                         if (message.Author.Id == 176537265336614912)

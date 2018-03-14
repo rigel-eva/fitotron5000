@@ -36,7 +36,7 @@ namespace Fitotron5000.Models
 
             modelBuilder.Entity<Weights>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                //entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.TimeStamp)
                     .HasColumnName("timeStamp")
