@@ -73,6 +73,9 @@ namespace Fitotron5000
                     case commandPrefix + "updategoal":
                         await Commands.userCommands.updateGoal(message);
                         break;
+                    case commandPrefix + "graph":
+                        await Commands.weightCommands.generateChart(message);
+                        break;
                     case commandPrefix + "exit":
                         if (message.Author.Id == 176537265336614912)
                         {
