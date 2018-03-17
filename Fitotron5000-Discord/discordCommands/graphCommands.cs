@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.IO;
 
-namespace Fitotron5000.Commands
+namespace Fitotron5000.discordCommands
 {
     class graphCommands
     {

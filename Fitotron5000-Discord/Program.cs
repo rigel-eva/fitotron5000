@@ -63,19 +63,19 @@ namespace Fitotron5000
                         await message.Channel.SendMessageAsync($"NO THIS IS FITOTRON5000");
                         break;
                     case commandPrefix + registerCommand:
-                        await Commands.userCommands.registerUser(message);
+                        await discordCommands.userCommands.registerUser(message);
                         break;
                     case commandPrefix + "userinfo":
-                        await Commands.userCommands.getUser(message);
+                        await discordCommands.userCommands.getUser(message);
                         break;
                     case commandPrefix + "addweight":
-                        await Commands.weightCommands.addWeight(message);
+                        await discordCommands.weightCommands.addWeight(message);
                         break;
                     case commandPrefix + "updategoal":
-                        await Commands.userCommands.updateGoal(message);
+                        await discordCommands.userCommands.updateGoal(message);
                         break;
                     case commandPrefix + "graph":
-                        await Commands.graphCommands.generateChart(message);
+                        await discordCommands.graphCommands.generateChart(message);
                         break;
                     case commandPrefix + "exit":
                         if (message.Author.Id == 176537265336614912)

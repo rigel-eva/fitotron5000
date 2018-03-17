@@ -2,7 +2,7 @@
 using System.Linq;
 using System;
 using System.Threading.Tasks;
-namespace Fitotron5000.Commands
+namespace Fitotron5000.discordCommands
 {
     class userCommands
     {
@@ -18,33 +18,27 @@ namespace Fitotron5000.Commands
             {
                 userID = message.Author.Id;
             }
-            try
+            using (var db = new Models.fitotron_devContext())
             {
-                using (var db = new Models.fitotron_devContext())
+                var user = db.Users.Where(e => e.discordID == userID);
+                if (user.Any())
                 {
-                    var user = db.Users.Where(e => e.discordID == userID);
-                    if (user.Any())
+                    Models.Users foundUser = user.First();
+                    string returnString = "User Found!";
+                    if (foundUser.CurrentWeight != null)
                     {
-                        Models.Users foundUser = user.First();
-                        string returnString = "User Found!";
-                        if (foundUser.CurrentWeight != null)
-                        {
-                            returnString += $"\n\tCurrent Weight: {Math.Round((double)foundUser.CurrentWeight, 1)} Lbs";
-                        }
-                        if (foundUser.Goal != null)
-                        {
-                            returnString += $"\n\tWeight Goal: {Math.Round((double)foundUser.Goal, 1)} Lbs";
-                        }
-                        await message.Channel.SendMessageAsync(returnString);
+                        returnString += $"\n\tCurrent Weight: {Math.Round((double)foundUser.CurrentWeight, 1)} Lbs";
                     }
-                    else
+                    if (foundUser.Goal != null)
                     {
-                        await message.Channel.SendMessageAsync("Could not find user!");
+                        returnString += $"\n\tWeight Goal: {Math.Round((double)foundUser.Goal, 1)} Lbs";
                     }
+                    await message.Channel.SendMessageAsync(returnString);
                 }
-            } catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
+                else
+                {
+                    await message.Channel.SendMessageAsync("Could not find user!");
+                }
             }
         }
         static public async Task registerUser(SocketMessage message)
